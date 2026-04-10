@@ -1,4 +1,4 @@
-# Projeto Integrador I: Análise de Dados Sociocomportamentais
+# Projeto Integrador I: Análise de Dados Sociocomportamentais 
 
 **Tema:** O Impacto Econômico das Plataformas de Apostas (Bets) no Endividamento Familiar
 
