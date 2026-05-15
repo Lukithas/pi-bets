@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ludopatia e Inadimplência | Projeto Integrador CEUB</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #3b1054;
+            --primary-light: #5a1c7d;
+            --accent: #a7197f;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: var(--bg-white); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; z-index: 1000;
+        }
+        
+        .nav-brand { font-weight: 700; color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        main { max-width: 1400px; margin: 0 auto; }
+        section { padding: 4rem 5%; }
+        
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.2rem; color: var(--text-dark); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .section-header p { color: var(--text-muted); max-width: 800px; margin: 0 auto; }
+
+        .hero { background: var(--bg-white); text-align: center; padding: 6rem 5%; border-bottom: 1px solid var(--border); }
+        .hero h1 { font-size: 3rem; color: var(--primary); margin-bottom: 1.2rem; letter-spacing: -0.03em; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 900px; margin: 0 auto; }
+
+        .project-description { background: var(--bg-white); padding: 3rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 4rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .project-description h3 { color: var(--primary); margin-bottom: 1.5rem; font-size: 1.5rem; border-left: 5px solid var(--accent); padding-left: 15px; }
+        .project-description p { margin-bottom: 1.2rem; text-align: justify; color: var(--text-dark); }
+        .project-description strong { color: var(--primary); }
+
+        .connector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .connector-card { background: var(--bg-light); padding: 1.5rem; border-radius: 8px; border-top: 3px solid var(--primary); }
+        .connector-card h4 { margin-bottom: 0.75rem; color: var(--accent); font-size: 1.1rem; }
+
+        .kpi-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .kpi-box { background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; border-left: 5px solid var(--primary); }
+        .kpi-box.danger { border-left-color: var(--danger); }
+        .kpi-value { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); margin: 0.5rem 0; }
+        .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 2rem; }
+        .chart-wrapper { background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); }
+        .canvas-container { position: relative; height: 300px; width: 100%; }
+
+        .database-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .db-card { background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; }
+        .db-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .db-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; flex-grow: 1; }
+        .btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.6rem; border: 1px solid var(--primary); color: var(--primary); border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.8rem; transition: 0.2s; }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        footer { background: var(--bg-white); border-top: 1px solid var(--border); padding: 4rem 5% 2rem; text-align: center; }
+        .team-list { list-style: none; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0; }
+        .team-list li a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--bg-light); border: 1px solid var(--border); border-radius: 30px; transition: 0.3s; }
+        .team-list li a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+        @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 2.2rem; } .charts-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" aria-label="Navegação Principal">
+        <div class="nav-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Projeto Integrador | Ciência da Computação
+        </div>
+        <ul class="nav-links">
+            <li><a href="#contexto">Descrição</a></li>
+            <li><a href="#dashboard">Indicadores</a></li>
+            <li><a href="#metodologia">Bases de Dados</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <h1>Ludopatia e o Impacto das BETs</h1>
+            <p>Análise acadêmica dos conectores sociais, culturais e epidemiológicos do vício em jogos no Brasil.</p>
+        </header>
+
+        <section id="contexto">
+            <div class="project-description">
+                <h3>Descrição do Projeto</h3>
+                <p>
+                    Este projeto integrador analisa a <strong>ludopatia</strong>, um transtorno de saúde mental caracterizado pela perda de controle sobre o comportamento de apostar, mesmo diante de prejuízos severos. Estimativas apontam que entre <strong>2,78 e 3 milhões de brasileiros</strong> já convivem com este transtorno, tornando-o o terceiro vício mais frequente no país, atrás apenas do álcool e tabagismo.
+                </p>
+                <p>
+                    A pesquisa foca na relação entre a inadimplência familiar e a explosão das plataformas de apostas online (BETs), que movimentam cerca de <strong>R$ 120 bilhões por ano</strong> no Brasil. O objetivo não é solucionar a crise, mas expor a gravidade do problema através da modelagem de dados e análise de indicadores públicos.
+                </p>
+
+                <div class="connector-grid">
+                    <article class="connector-card">
+                        <h4>Conector Cultural</h4>
+                        <p>A normalização histórica do jogo pelo Estado (loterias) facilitou a adesão às BETs. A ritualização de eventos como a Mega da Virada reduz a percepção de risco populacional.</p>
+                    </article>
+                    <article class="connector-card">
+                        <h4>Conector Familiar</h4>
+                        <p>O ciclo <em>"chasing losses"</em> (perseguição das perdas) leva à dilapidação patrimonial extrema, resultando em rupturas conjugais e negligência com filhos.</p>
+                    </article>
+                    <article class="connector-card">
+                        <h4>Conector Epidemiológico</h4>
+                        <p>As plataformas exploram mecanismos neurológicos de recompensa dopaminérgica, criando uma dependência similar à química, com alta prevalência de ansiedade e depressão.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="kpi-container">
+                <div class="kpi-box danger">
+                    <div class="kpi-label">Endividamento (Bets)</div>
+                    <div class="kpi-value">86%</div>
+                    <div class="kpi-label" style="text-transform:none">Dos apostadores estão negativados</div>
+                </div>
+                <div class="kpi-box danger">
+                    <div class="kpi-label">Ideação Suicida</div>
+                    <div class="kpi-value">80%</div>
+                    <div class="kpi-label" style="text-transform:none">Taxa em pacientes clínicos</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Volume do Bolsa Família</div>
+                    <div class="kpi-value">R$ 3 Bi</div>
+                    <div class="kpi-label" style="text-transform:none">Gastos via Pix em Ago/2024</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Ticket Médio (Aposta)</div>
+                    <div class="kpi-value">R$ 100</div>
+                    <div class="kpi-label" style="text-transform:none">Média mensal por apostador</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" style="background: var(--bg-white);">
+            <div class="section-header">
+                <h2>Painel de Análise Visual</h2>
+                <p>Cruzamento de dados do SUS, Banco Central e Relatórios Técnicos Oficiais.</p>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-wrapper">
+                    <div class="chart-title">Atendimentos SUS por Ludopatia (CID-10 F63.0)</div>
+                    <div class="canvas-container"><canvas id="chartSUS"></canvas></div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="chart-title">Fatores de Vulnerabilidade e Comorbidades</div>
+                    <div class="canvas-container"><canvas id="chartSaude"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="metodologia">
+            <div class="section-header">
+                <h2>Bases de Dados Consultadas</h2>
+                <p>Fundamentação técnica extraída de fontes governamentais e acadêmicas.</p>
+            </div>
+            <div class="database-grid">
+                <div class="db-card">
+                    <h4>Banco Central (Relatório EE119)</h4>
+                    <p>Dados sobre o mercado de apostas e perfil financeiro dos apostadores via Pix.</p>
+                    <a href="https://www.bcb.gov.br/conteudo/relatorioinflacao/EstudosEspeciais/EE119_Analise_tecnica_sobre_o_mercado_de_apostas_online_no_Brasil_e_o_perfil_dos_apostadores.pdf" target="_blank" class="btn-outline">Ver Relatório</a>
+                </div>
+                <div class="db-card">
+                    <h4>DataSUS (SIH/SIA)</h4>
+                    <p>Registros de morbidade hospitalar e ambulatorial relacionados ao transtorno do jogo.</p>
+                    <a href="https://datasus.saude.gov.br/" target="_blank" class="btn-outline">Acessar TABNET</a>
+                </div>
+                <div class="db-card">
+                    <h4>CPI das BETs (Senado)</h4>
+                    <p>Dados de mercado e depoimentos institucionais sobre o impacto social das apostas esportivas.</p>
+                    <a href="https://www12.senado.leg.br/noticias/temas/cpi-das-bets" target="_blank" class="btn-outline">Portal do Senado</a>
+                </div>
+                <div class="db-card">
+                    <h4>Serasa Experian</h4>
+                    <p>Pesquisas sobre o perfil de endividamento e inadimplência do consumidor brasileiro.</p>
+                    <a href="#" class="btn-outline">Dados de Mercado</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="equipe">
+        <div class="footer-content">
+            <span class="footer-logo">Projeto Integrador I | Ciência da Computação - UniCEUB</span>
+            <ul class="team-list" aria-label="Links do GitHub da Equipe">
+                <li><a href="https://github.com/CaioB1ima" target="_blank">Caio Barbosa</a></li>
+                <li><a href="https://github.com/Gadshx" target="_blank">Guilherme Augusto</a></li>
+                <li><a href="https://github.com/Gustavox0207" target="_blank">Gustavo Albuquerque</a></li>
+                <li><a href="https://github.com/Lukithas" target="_blank">Lucas Bretas</a></li>
+                <li><a href="https://github.com/Tweuz" target="_blank">Matheus Onival</a></li>
+            </ul>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Brasília, DF - 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+
+        new Chart(document.getElementById('chartSUS'), {
+            type: 'line',
+            data: {
+                labels: ['2018', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Atendimentos SUS',
+                    data: [108, 413, 841, 1290, 1161],
+                    borderColor: '#3b1054',
+                    backgroundColor: 'rgba(59, 16, 84, 0.1)',
+                    fill: true, tension: 0.3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        new Chart(document.getElementById('chartSaude'), {
+            type: 'radar',
+            data: {
+                labels: ['Ansiedade', 'Depressão', 'Endividamento', 'Ideação Suicida', 'Público Jovem'],
+                datasets: [{
+                    label: 'Prevalência (%)',
+                    data: [51, 42, 86, 80, 56],
+                    backgroundColor: 'rgba(167, 25, 127, 0.2)',
+                    borderColor: '#a7197f',
+                    pointBackgroundColor: '#3b1054'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100 } } }
+        });
+    </script>
+</body>
+</html>
