@@ -5,6 +5,12 @@
 ## 1. Propósito e Escopo do Projeto
 O foco deste semestre não compreende o desenvolvimento de uma aplicação final. Nosso objetivo primário é a "resolução de problemas complexos" por meio da investigação profunda do cenário atual. Existe uma lacuna no entendimento sobre o impacto real da facilidade de acesso às apostas. A nossa entrega será um Dashboard interativo, embasado em "modelagem estatística e desenvolvimento de indicadores (KPIs)", que servirá para comprovar a viabilidade e a necessidade de projetar uma solução tecnológica futura.
 
+### 🔗 Links Rápidos
+| Recurso | Link de Acesso |
+| :--- | :--- |
+| **Apresentação do Projeto** | [ihcbets.netlify.app](https://ihcbets.netlify.app/ ) |
+| **Backlog do Projeto** | [backlogpibets.netlify.app](https://backlogpibets.netlify.app/ ) |
+
 ## 2. Abordagem Metodológica
 Para identificar as necessidades reais dos usuários e o escopo do problema, aplicaremos conceitos de *Lean Inception* e métodos ágeis. Nossa abordagem se divide em:
 * **Descoberta:** Levantar os gatilhos comportamentais (como a ilusão de renda extra) que incentivam o uso contínuo de plataformas de apostas.
