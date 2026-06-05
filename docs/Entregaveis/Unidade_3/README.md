@@ -49,7 +49,7 @@ pip install streamlit pandas numpy seaborn matplotlib requests
 ### 4. Iniciar a aplicação
 
 ```bash
-streamlit run dashboard.py
+python -m streamlit run dashboard.py
 ```
 
 O navegador abrirá automaticamente em `http://localhost:8501`.
