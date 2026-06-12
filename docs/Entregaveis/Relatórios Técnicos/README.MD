@@ -1,4 +1,4 @@
-##INSTRUÇÕES PARA ABRIR OS RELATÓRIOS
+INSTRUÇÕES PARA ABRIR OS RELATÓRIOS
 
 1.Baixar os 3 documentos 2.Abrir o Index Relatório
 
