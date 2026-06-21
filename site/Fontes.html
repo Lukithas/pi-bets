@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fontes — Painel Analítico: Ludopatia & BETs</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-elevated: #1e293b;
+    --bg-card: #1e293b;
+    --border: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    --accent: #a7197f;
+    --accent-soft: rgba(167, 25, 127, 0.14);
+    --accent-line: rgba(167, 25, 127, 0.4);
+    --quant: #f59e0b;
+    --quant-soft: rgba(245, 158, 11, 0.14);
+    --qual: #a7197f;
+    --qual-soft: rgba(167, 25, 127, 0.14);
+    --raw: #ef4444;
+    --raw-soft: rgba(239, 68, 68, 0.14);
+    --serif: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: 'SF Mono', 'Consolas', 'Menlo', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  header {
+    margin-bottom: 56px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .lede {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 620px;
+    line-height: 1.65;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .meta-item strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 56px 0 22px;
+  }
+
+  .section-label .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .section-label h2 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .section-label .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    max-width: 600px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    border-color: var(--accent-line);
+    background: var(--bg-elevated);
+    transform: translateY(-1px);
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tag.quant { background: var(--quant-soft); color: var(--quant); }
+  .tag.qual { background: var(--qual-soft); color: var(--qual); }
+  .tag.raw { background: var(--raw-soft); color: var(--raw); }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 10px;
+  }
+
+  .card-url {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .arrow {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    transition: transform 0.18s ease, color 0.18s ease;
+    flex-shrink: 0;
+  }
+
+  .card:hover .arrow {
+    transform: translate(2px, -2px);
+    color: var(--accent);
+  }
+
+  .legend {
+    display: flex;
+    gap: 22px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot.quant { background: var(--quant); }
+  .dot.qual { background: var(--qual); }
+  .dot.raw { background: var(--raw); }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+  }
+
+  footer a:hover { color: var(--accent); border-color: var(--accent-line); }
+
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent-line);
+    color: var(--text-primary);
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    font-family: var(--mono);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <h1>Fontes da pesquisa<br><em>Ludopatia &amp; BETs</em></h1>
+    <p class="lede">Cada número usado no dashboard tem origem rastreável. Esta página reúne todas as fontes consultadas — toque em qualquer cartão para abrir a fonte original.</p>
+    <div class="meta-row">
+      <div class="meta-item"><strong>13</strong> fontes</div>
+      <div class="meta-item"><strong>2018–2026</strong> período coberto</div>
+    </div>
+  </header>
+
+  <div class="section-label">
+    <span class="num">01</span>
+    <h2>Dados quantitativos</h2>
+    <span class="line"></span>
+  </div>
+  <p class="section-desc">Fontes com estatística numérica específica, presentes em <code>data/dados_apostas_consolidado.csv</code>.</p>
+
+  <div class="grid">
+
+    <a class="card" href="https://radis.ensp.fiocruz.br" target="_blank" rel="noopener" onclick="toast('Abrindo Radis/Fiocruz…')">
+      <div class="card-top">
+        <span class="card-name">SUS / Ministério da Saúde</span>
+        <span class="tag quant">Quant.</span>
+      </div>
+      <p class="card-desc">Atendimentos por ludopatia (CID-10 F63.0), via Radis/Fiocruz — 10.553 atendimentos registrados, crescimento de 104%.</p>
+      <div class="card-foot">
+        <span class="card-url">radis.ensp.fiocruz.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.metropoles.com/sao-paulo/viciados-em-bets-tem-ideias-suicidas" target="_blank" rel="noopener" onclick="toast('Abrindo Metrópoles…')">
+      <div class="card-top">
+        <span class="card-name">PRO-AMJO / USP (via Metrópoles)</span>
+        <span class="tag quant">Quant.</span>
+      </div>
+      <p class="card-desc">80% dos pacientes atendidos no programa de jogo patológico do IPq-HC/USP apresentam ideação suicida.</p>
+      <div class="card-foot">
+        <span class="card-url">metropoles.com/sao-paulo</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.strategyand.pwc.com/br/pt/relatorios/o-impacto-das-apostas-esportivas-no-consumo.html" target="_blank" rel="noopener" onclick="toast('Abrindo PwC Strategy&…')">
+      <div class="card-top">
+        <span class="card-name">PwC / Instituto Locomotiva</span>
+        <span class="tag quant">Quant.</span>
+      </div>
+      <p class="card-desc">52% dos consumidores das classes C/D/E usam dinheiro da poupança para apostar; 48% substituem lazer e alimentação.</p>
+      <div class="card-foot">
+        <span class="card-url">strategyand.pwc.com</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.uff.br/04-09-2024/brasileiros-sentem-o-impacto-social-e-economico-do-vicio-nas-bets" target="_blank" rel="noopener" onclick="toast('Abrindo UFF…')">
+      <div class="card-top">
+        <span class="card-name">UFF — Sociologia</span>
+        <span class="tag quant">Quant.</span>
+      </div>
+      <p class="card-desc">Levantamento do Itaú citado pela UFF: R$ 68 bilhões gastos por brasileiros em apostas online (0,22% do PIB).</p>
+      <div class="card-foot">
+        <span class="card-url">uff.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://ibdfam.org.br/artigos/2195" target="_blank" rel="noopener" onclick="toast('Abrindo IBDFAM…')">
+      <div class="card-top">
+        <span class="card-name">IBDFAM</span>
+        <span class="tag quant">Quant.</span>
+      </div>
+      <p class="card-desc">Instituto Brasileiro de Direito de Família — registros de pedidos de outorga ligados a apostas online e seus impactos familiares.</p>
+      <div class="card-foot">
+        <span class="card-url">ibdfam.org.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">
+    <span class="num">02</span>
+    <h2>Observações qualitativas</h2>
+    <span class="line"></span>
+  </div>
+  <p class="section-desc">Fontes sem estatística numérica fechada, usadas para embasar a discussão contextual e teórica do projeto.</p>
+
+  <div class="grid">
+
+    <a class="card" href="https://www.defensoria.ce.def.br" target="_blank" rel="noopener" onclick="toast('Abrindo Defensoria do Ceará…')">
+      <div class="card-top">
+        <span class="card-name">Defensoria Pública do Ceará</span>
+        <span class="tag qual">Qualit.</span>
+      </div>
+      <p class="card-desc">Relatos institucionais de casos de endividamento e ações de renegociação de dívidas, sem número público específico vinculado a apostas.</p>
+      <div class="card-foot">
+        <span class="card-url">defensoria.ce.def.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.unifor.br/web/saude/bets-e-saude-mental" target="_blank" rel="noopener" onclick="toast('Abrindo Unifor…')">
+      <div class="card-top">
+        <span class="card-name">Unifor — Blog Saúde</span>
+        <span class="tag qual">Qualit.</span>
+      </div>
+      <p class="card-desc">Discussão sobre ansiedade e sintomas depressivos associados a apostas online entre jovens e adultos.</p>
+      <div class="card-foot">
+        <span class="card-url">unifor.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.camara.leg.br/noticias/1138096" target="_blank" rel="noopener" onclick="toast('Abrindo Câmara dos Deputados…')">
+      <div class="card-top">
+        <span class="card-name">Câmara dos Deputados</span>
+        <span class="tag qual">Qualit.</span>
+      </div>
+      <p class="card-desc">Projeto de Lei 4583/24 — propõe regras de publicidade, limites de idade e maior transparência das plataformas.</p>
+      <div class="card-foot">
+        <span class="card-url">camara.leg.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://revistapesquisa.fapesp.br/en/proliferation-of-betting-sites" target="_blank" rel="noopener" onclick="toast('Abrindo Revista FAPESP…')">
+      <div class="card-top">
+        <span class="card-name">Revista Pesquisa FAPESP</span>
+        <span class="tag qual">Qualit.</span>
+      </div>
+      <p class="card-desc">Proliferação acelerada de sites de apostas e paralelos neurobiológicos entre ludopatia digital e vícios em substâncias.</p>
+      <div class="card-foot">
+        <span class="card-url">revistapesquisa.fapesp.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://ojs.brazilianjournals.com.br/ojs/index.php/BJHR/article/view/80661" target="_blank" rel="noopener" onclick="toast('Abrindo Brazilian Journal of Health Review…')">
+      <div class="card-top">
+        <span class="card-name">Brazilian Journal of Health Review</span>
+        <span class="tag qual">Qualit.</span>
+      </div>
+      <p class="card-desc">Teixeira et al. (2025) — revisão acadêmica sobre os efeitos das apostas online na saúde mental da população.</p>
+      <div class="card-foot">
+        <span class="card-url">ojs.brazilianjournals.com.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">
+    <span class="num">03</span>
+    <h2>Bases de dados brutas</h2>
+    <span class="line"></span>
+  </div>
+  <p class="section-desc">Usadas localmente no dashboard. Não versionadas neste repositório por excederem o limite de tamanho do GitHub.</p>
+
+  <div class="grid">
+
+    <a class="card" href="https://www.consumidor.gov.br/pages/indicador/relatorio/abrir" target="_blank" rel="noopener" onclick="toast('Abrindo Consumidor.gov.br…')">
+      <div class="card-top">
+        <span class="card-name">Consumidor.gov.br</span>
+        <span class="tag raw">Base bruta</span>
+      </div>
+      <p class="card-desc">Reclamações registradas pelo portal oficial — jan/2024 a abr/2026. Mais de 2GB em CSVs mensais.</p>
+      <div class="card-foot">
+        <span class="card-url">consumidor.gov.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.bcb.gov.br/estatisticas" target="_blank" rel="noopener" onclick="toast('Abrindo Banco Central…')">
+      <div class="card-top">
+        <span class="card-name">Banco Central — SGS</span>
+        <span class="tag raw">Base bruta</span>
+      </div>
+      <p class="card-desc">Sistema Gerenciador de Séries Temporais — indicadores de inadimplência cruzados com o volume de apostas.</p>
+      <div class="card-foot">
+        <span class="card-url">bcb.gov.br</span>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="dot quant"></span> Estatística numérica verificada</div>
+    <div class="legend-item"><span class="dot qual"></span> Contexto sem número fechado</div>
+    <div class="legend-item"><span class="dot raw"></span> Base de dados completa, uso local</div>
+  </div>
+
+  <footer>
+    <p>Painel Analítico: Ludopatia &amp; BETs</p>
+    <a href="https://github.com/Lukithas/pi-bets">Voltar ao repositório</a>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+</script>
+
+</body>
+</html>
