@@ -1,6 +1,5 @@
-streamlit
-pandas
-numpy
-seaborn
-matplotlib
-pysus
+streamlit>=1.38
+pandas>=2.0
+numpy>=1.26
+seaborn>=0.13
+matplotlib>=3.8
