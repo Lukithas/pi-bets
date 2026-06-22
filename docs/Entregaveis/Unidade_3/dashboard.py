@@ -9,125 +9,258 @@ import textwrap
 import os
 
 # =====================================================================
-# 1. CONFIGURAÇÃO DA PÁGINA
+# 1. CONFIGURAÇÃO DA PÁGINA (FORÇANDO MODO CLARO)
 # =====================================================================
+# Adicionamos configuração na URL para forçar o tema Light por padrão,
+# garantindo que o tema não seja influenciado pelo SO do usuário.
 st.set_page_config(page_title="Ludopatia & BETs | PI", layout="wide", page_icon="📊")
 
-# =====================================================================
-# 2. BARRA LATERAL E MODO ESCURO (CORRIGIDO E ATIVADO)
-# =====================================================================
-st.sidebar.image("https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-versao-estendida.png", width='stretch')
-st.sidebar.title("Configurações")
+# Função para injetar JS e forçar o tema claro se o usuário não tocou no botão ainda
+# Isso sobrepõe a configuração de sistema (SO) que estava escurecendo o fundo.
+st.markdown("""
+    <script>
+        var elements = window.parent.document.querySelectorAll('.stApp');
+        if (elements.length > 0) {
+            elements[0].style.backgroundColor = '#f8fafc';
+        }
+    </script>
+    """, unsafe_allow_html=True)
 
-# O botão volta a funcionar perfeitamente
-modo_escuro = st.sidebar.toggle("🌙 Ativar Modo Escuro", value=False)
+
+# =====================================================================
+# 1.1 ESTADO DOS CONTROLES DE ACESSIBILIDADE (botões simples ligar/desligar)
+# =====================================================================
+if "modo_escuro" not in st.session_state:
+    st.session_state.modo_escuro = False
+if "alto_contraste" not in st.session_state:
+    st.session_state.alto_contraste = False
+if "nivel_fonte" not in st.session_state:
+    st.session_state.nivel_fonte = 1  # 0=A- 1=A 2=A+ 3=A++
+
+def alternar_modo_escuro():
+    st.session_state.modo_escuro = not st.session_state.modo_escuro
+
+def alternar_alto_contraste():
+    st.session_state.alto_contraste = not st.session_state.alto_contraste
+
+def aumentar_fonte():
+    st.session_state.nivel_fonte = min(3, st.session_state.nivel_fonte + 1)
+
+def diminuir_fonte():
+    st.session_state.nivel_fonte = max(0, st.session_state.nivel_fonte - 1)
+
+modo_escuro = st.session_state.modo_escuro
+alto_contraste = st.session_state.alto_contraste
+escala_fonte = {0: 0.875, 1: 1.0, 2: 1.15, 3: 1.3}[st.session_state.nivel_fonte]
 
 plt.close('all')
 
+# Se o usuário clicar, ativamos o escuro. Caso contrário, forçamos o branco (claro).
 if modo_escuro:
-    bg_body = "#0f172a"
     bg_surface = "#1e293b"
-    text_main = "#f8fafc" # Letras brancas
+    text_main = "#f8fafc"
     text_muted = "#94a3b8"
     border_color = "#334155"
     bg_desc = "#1e293b"
-    
-    # A MÁGICA DOS GRÁFICOS VISÍVEIS NO ESCURO:
-    # Pinta o fundo de cinza escuro e todas as linhas/textos de branco
-    rc_params = {
-        "axes.facecolor": bg_surface,
-        "figure.facecolor": bg_surface,
-        "text.color": text_main,
-        "axes.labelcolor": text_main,
-        "xtick.color": text_main,
-        "ytick.color": text_main,
-        "grid.color": border_color,
-        "axes.edgecolor": border_color
-    }
+    accent = "#a7197f"
+    rc_params = {"axes.facecolor": bg_surface, "figure.facecolor": "#0f172a", "text.color": text_main, "axes.labelcolor": text_main, "xtick.color": text_main, "ytick.color": text_main, "grid.color": border_color, "axes.edgecolor": border_color}
     sns.set_theme(style="darkgrid", rc=rc_params)
+    bg_app = "#0f172a" 
+    bg_sidebar = "#1e293b"
 else:
-    bg_body = "#f8fafc"
     bg_surface = "#ffffff"
-    text_main = "#0f172a" # Letras escuras
+    text_main = "#0f172a"
     text_muted = "#64748b"
     border_color = "#e2e8f0"
     bg_desc = "#f8fafc"
-    
-    # Modo claro clássico
-    rc_params = {
-        "axes.facecolor": bg_surface,
-        "figure.facecolor": bg_surface,
-        "text.color": text_main,
-        "axes.labelcolor": text_main,
-        "xtick.color": text_main,
-        "ytick.color": text_main,
-        "grid.color": border_color,
-        "axes.edgecolor": border_color
-    }
+    accent = "#a7197f"
+    rc_params = {"axes.facecolor": bg_surface, "figure.facecolor": "#ffffff", "text.color": text_main, "axes.labelcolor": text_main, "xtick.color": text_main, "ytick.color": text_main, "grid.color": border_color, "axes.edgecolor": border_color}
     sns.set_theme(style="whitegrid", rc=rc_params)
+    bg_app = "#f8fafc" 
+    bg_sidebar = "#ffffff" 
 
-# Injeção de CSS Dinâmico (Força a cor no Streamlit inteiro)
+# Sobrepõe as cores se o Alto Contraste estiver ativo (independente do modo claro/escuro)
+if alto_contraste:
+    if modo_escuro:
+        bg_app, bg_sidebar, bg_surface, bg_desc = "#000000", "#000000", "#000000", "#000000"
+        text_main, text_muted = "#ffffff", "#ffffff"
+        border_color = "#ffffff"
+        accent = "#ffe600"
+    else:
+        bg_app, bg_sidebar, bg_surface, bg_desc = "#ffffff", "#ffffff", "#ffffff", "#ffffff"
+        text_main, text_muted = "#000000", "#000000"
+        border_color = "#000000"
+        accent = "#7a0058"
+    rc_params = {"axes.facecolor": bg_surface, "figure.facecolor": bg_app, "text.color": text_main, "axes.labelcolor": text_main, "xtick.color": text_main, "ytick.color": text_main, "grid.color": border_color, "axes.edgecolor": border_color}
+    sns.set_theme(style="darkgrid" if modo_escuro else "whitegrid", rc=rc_params)
+
+borda_box = "2px" if alto_contraste else "1px"
+
+# =====================================================================
+# 1.2 BARRA DE ACESSIBILIDADE (canto superior direito, botões simples)
+# =====================================================================
+faixa_topo = st.container()
+with faixa_topo:
+    espaco, b1, b2, b3, b4 = st.columns([5, 1.3, 1.3, 1.1, 1.3])
+    with b1:
+        st.button("Fonte −", key="btn_menos", on_click=diminuir_fonte, use_container_width=True)
+    with b2:
+        st.button("Fonte +", key="btn_mais", on_click=aumentar_fonte, use_container_width=True)
+    with b3:
+        st.button("Contraste" + (" ✓" if alto_contraste else ""), key="btn_contraste", on_click=alternar_alto_contraste, use_container_width=True)
+    with b4:
+        st.button("Modo Escuro" + (" ✓" if modo_escuro else ""), key="btn_escuro", on_click=alternar_modo_escuro, use_container_width=True)
+
+# =====================================================================
+# 2. BARRA LATERAL — SOMENTE FILTROS DE DADOS
+# =====================================================================
+st.sidebar.image("https://institucional.uniceub.br/hubfs/BrandCenter/img/logo-ceub-versao-estendida.png", use_container_width=True)
+st.sidebar.title("Filtros")
+
+# Injeção de CSS Dinâmico FORÇANDO as cores sobre a configuração do Streamlit/SO
 st.markdown(f'''
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    [data-testid="stAppViewContainer"] {{ background-color: {bg_body} !important; }}
-    [data-testid="stSidebar"] {{ background-color: {bg_surface} !important; border-right: 1px solid {border_color} !important; }}
-    [data-testid="stHeader"] {{ background-color: {bg_body} !important; }}
-    
-    html, body, [class*="css"] {{ font-family: 'Inter', sans-serif !important; }}
-    h1, h2, h3, p {{ color: {text_main} !important; }}
-    
-    [data-testid="stMetricValue"] {{ color: {text_main} !important; }}
-    [data-testid="stMetricLabel"] * {{ color: {text_muted} !important; }}
-    
-    .grafico-desc {{ background-color: {bg_desc}; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #a7197f; margin-top: 8px; margin-bottom: 20px; font-size: 0.88rem; line-height: 1.6; border: 1px solid {border_color}; color: {text_main} !important; }}
-    .grafico-desc strong {{ color: #a7197f !important; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; }}
-    
-    .kpi-container {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }}
-    .kpi-box {{ background: {bg_surface}; padding: 1.5rem; border-radius: 12px; border: 1px solid {border_color}; text-align: center; border-left: 5px solid #3b1054; }}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    html {{ font-size: {escala_fonte * 100}%; }}
+
+    /* FORÇA a cor de fundo do aplicativo inteiro e da barra lateral */
+    [data-testid="stAppViewContainer"] {{ background-color: {bg_app} !important; }}
+    [data-testid="stSidebar"] {{ background-color: {bg_sidebar} !important; border-right: {borda_box} solid {border_color} !important; }}
+    [data-testid="stHeader"] {{ background-color: {bg_app} !important; }}
+
+    /* FORÇA as cores dos textos para ignorar o SO, mas PRESERVA os ícones nativos (Material Symbols) */
+    html, body, p, h1, h2, h3, h4, h5, h6, label, span {{
+        color: {text_main} !important;
+    }}
+    html, body, p, h1, h2, h3, h4, h5, h6, label,
+    span:not([class*="material"]):not([data-testid*="Icon"]) {{
+        font-family: 'Inter', sans-serif !important;
+    }}
+    [data-testid="stIconMaterial"], span[class*="material-symbols"] {{
+        font-family: 'Material Symbols Rounded' !important;
+    }}
+    .stMarkdown, .stMetricLabel, .stMetricValue {{
+        color: {text_main} !important;
+    }}
+
+    /* Título principal com leve destaque tipográfico */
+    .titulo-principal {{ font-weight: 800 !important; letter-spacing: -0.02em; margin-bottom: 0.2rem !important; }}
+    .subtitulo-principal {{ font-weight: 400 !important; opacity: 0.85; }}
+
+    /* Cartões de gráfico com sombra suave e leve elevação no hover */
+    [data-testid="stVerticalBlockBorderWrapper"] {{
+        border-radius: 14px !important;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }}
+    [data-testid="stVerticalBlockBorderWrapper"]:hover {{
+        box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+        transform: translateY(-2px);
+    }}
+
+    /* Box da Descrição do Gráfico */
+    .grafico-desc {{ background-color: {bg_desc}; padding: 12px 16px; border-radius: 10px; border-left: 4px solid {accent}; margin-top: 10px; margin-bottom: 4px; font-size: 0.88em; color: {text_main} !important; line-height: 1.65; border-top: {borda_box} solid {border_color}; border-right: {borda_box} solid {border_color}; border-bottom: {borda_box} solid {border_color}; }}
+    .grafico-desc strong {{ color: {accent} !important; font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.06em; }}
+
+    /* Caixas de KPI com hierarquia visual mais clara */
+    .kpi-container {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 2rem; }}
+    .kpi-box {{ background: {bg_surface}; padding: 1.5rem; border-radius: 14px; border: {borda_box} solid {border_color}; text-align: center; border-left: 5px solid #3b1054; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s ease; }}
+    .kpi-box:hover {{ transform: translateY(-3px); }}
     .kpi-box.danger {{ border-left-color: #ef4444; }}
-    .kpi-value {{ font-size: 2rem; font-weight: 700; color: {text_main} !important; margin: 0.5rem 0; }}
-    .kpi-label {{ font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: {text_muted} !important; }}
+    .kpi-value {{ font-size: 2.1em; font-weight: 800; color: {text_main} !important; margin: 0.4rem 0; letter-spacing: -0.02em; }}
+    .kpi-label {{ font-size: 0.78em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: {text_muted} !important; }}
+
+    /* Abas com aparência mais limpa */
+    [data-baseweb="tab-list"] {{ gap: 4px; }}
+    [data-baseweb="tab"] {{ font-weight: 600 !important; }}
+
+    /* Foco visível em elementos interativos (acessibilidade de teclado) */
+    button:focus-visible, [role="tab"]:focus-visible, a:focus-visible {{
+        outline: 3px solid {accent} !important;
+        outline-offset: 2px !important;
+    }}
+
+    /* Barra de acessibilidade no topo — botões mais amigáveis: cor suave, arredondados, com hover */
+    button[data-testid="stBaseButton-secondary"] {{
+        font-size: 0.85em !important;
+        font-weight: 700 !important;
+        padding: 0.45rem 0.6rem !important;
+        border-radius: 999px !important;
+        border: {("3px solid " + border_color) if alto_contraste else "none"} !important;
+        background-color: {bg_surface if alto_contraste else ("#33415540" if modo_escuro else "#a7197f14")} !important;
+        color: {accent} !important;
+        white-space: nowrap !important;
+        transition: background-color 0.15s ease, transform 0.15s ease !important;
+    }}
+    button[data-testid="stBaseButton-secondary"]:hover {{
+        background-color: {accent} !important;
+        color: {bg_app if alto_contraste else "#ffffff"} !important;
+        transform: translateY(-1px);
+    }}
 </style>
 ''', unsafe_allow_html=True)
 
-st.sidebar.markdown("---")
-filtro_genero = st.sidebar.multiselect("Filtrar por Gênero:", ['Masculino', 'Feminino'], default=['Masculino', 'Feminino'])
-idade_slider = st.sidebar.slider("Faixa Etária:", 18, 65, (18, 65))
-st.sidebar.markdown("---")
+filtro_genero = st.sidebar.multiselect("Gênero:", ['Masculino', 'Feminino'], default=['Masculino', 'Feminino'])
+
+st.sidebar.markdown("**Faixa Etária:**")
+col_idade_min, col_idade_max = st.sidebar.columns(2)
+with col_idade_min:
+    idade_min = st.number_input("Idade mínima", min_value=18, max_value=65, value=18, step=1, key="idade_min")
+with col_idade_max:
+    idade_max = st.number_input("Idade máxima", min_value=18, max_value=65, value=65, step=1, key="idade_max")
+idade_slider = (min(idade_min, idade_max), max(idade_min, idade_max))
+
+st.sidebar.markdown(
+    '<div style="font-size: 1.05em; line-height: 1.5; opacity: 0.85; margin-top: 4px;">'
+    'Esses filtros afetam apenas os gráficos 3, 4 e 5 (baseados em microdados de pacientes, do SUS quando disponíveis, ou simulados como reserva). '
+    'Os demais gráficos usam dados de pesquisas externas (Serasa, PwC, USP, Consumidor.gov) e não são '
+    'segmentáveis por gênero/idade.</div>',
+    unsafe_allow_html=True
+)
 
 # =====================================================================
-# 3. EXTRAÇÃO DE DADOS (Mantendo a leitura do ZIP Original)
+# 3. EXTRAÇÃO DE DADOS INTELIGENTE
 # =====================================================================
-
-@st.cache_data(show_spinner="Carregando dados estatísticos rápidos...")
+@st.cache_data(show_spinner="Carregando dados estatísticos...")
 def get_data_estatistica():
     df_macro = pd.DataFrame([["Loterias", 71.3], ["Apostas Online (BETs)", 32.1], ["Jogo do Bicho", 28.9]], columns=["Categoria", "Valor"])
     df_bcb = pd.DataFrame({'Ano': range(2018, 2025), 'Inadimplencia': [3.1, 2.9, 2.7, 2.2, 2.7, 3.2, 3.1]})
-    
-    caminho_sus = 'dados_sus.csv'
+
+    # Tenta carregar dados reais de pacientes (gerados via DataSUS/pysus). Se não
+    # encontrar o arquivo, usa dados simulados como reserva (fallback seguro).
     try:
-        if os.path.exists(caminho_sus):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        caminho_sus = os.path.join(script_dir, 'dados_sus.csv')
+    except NameError:
+        caminho_sus = 'dados_sus.csv'
+
+    if os.path.exists(caminho_sus):
+        try:
             df_pacientes = pd.read_csv(caminho_sus)
-            return df_macro, df_bcb, df_pacientes, True
-    except Exception as e:
-        print(f"Erro ao ler {caminho_sus}: {e}")
+            colunas_esperadas = {'Idade', 'Genero', 'Renda_Mensal', 'Divida_Acumulada'}
+            if colunas_esperadas.issubset(df_pacientes.columns):
+                return df_macro, df_bcb, df_pacientes, True
+        except Exception:
+            pass
 
     np.random.seed(42)
-    df_pacientes = pd.DataFrame({
-        'Idade': np.random.normal(28, 8, 500).astype(int), 
-        'Renda_Mensal': np.random.lognormal(7.5, 0.6, 500), 
-        'Divida_Acumulada': np.random.lognormal(7.5, 0.6, 500) * 2, 
-        'Genero': np.random.choice(['Masculino', 'Feminino'], 500)
-    })
+    df_pacientes = pd.DataFrame({'Idade': np.random.normal(28, 8, 500).astype(int), 'Renda_Mensal': np.random.lognormal(7.5, 0.6, 500), 'Divida_Acumulada': np.random.lognormal(7.5, 0.6, 500) * 2, 'Genero': np.random.choice(['Masculino', 'Feminino'], 500)})
     return df_macro, df_bcb, df_pacientes, False
 
-@st.cache_data(show_spinner="Processando dados do Consumidor.gov...")
+st.sidebar.markdown("---")
+st.sidebar.subheader("Status das Bases de Dados")
+
+@st.cache_data(show_spinner="Processando 200MB de dados do Consumidor.gov...")
 def get_dados_consumidor_local():
     pasta_extracao = 'dados_consumidor_csvs'
-    caminho_zip = 'bases_consumidor.zip'
-
+    
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        caminho_zip = os.path.join(script_dir, 'bases_consumidor.zip')
+    except NameError:
+        caminho_zip = 'bases_consumidor.zip'
+        
     if os.path.exists(caminho_zip):
         try:
             with zipfile.ZipFile(caminho_zip, 'r') as zip_ref:
@@ -149,14 +282,19 @@ def get_dados_consumidor_local():
                     top_problemas.columns = ['Problema', 'Quantidade']
                     return top_problemas, True
         except Exception as e:
-            print(f"Erro ZIP: {e}")
-
+            pass
+            
     df_mock = pd.DataFrame({'Problema': ['Saque', 'Publicidade', 'Bloqueio', 'Cobrança', 'Bônus'], 'Quantidade': [1450, 980, 750, 620, 410]})
     return df_mock, False
 
 @st.cache_data(show_spinner="Carregando pesquisa da equipe...")
 def get_dados_consolidados_csv():
-    caminho_csv = 'dados_apostas_consolidado.csv'
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        caminho_csv = os.path.join(script_dir, 'dados_apostas_consolidado.csv')
+    except NameError:
+        caminho_csv = 'dados_apostas_consolidado.csv'
+        
     if os.path.exists(caminho_csv):
         try:
             df = pd.read_csv(caminho_csv)
@@ -164,7 +302,7 @@ def get_dados_consolidados_csv():
             return df, True
         except:
             pass
-
+    
     dados = [["2024", "OMS", "% adultos apostaram (1 ano)", 46.2], ["2024", "OMS", "% adolescentes apostaram", 17.9], ["2018", "USP/IPq", "Dívidas > renda mensal", 60.0], ["2018", "USP/IPq", "Ideação suicida (2018)", 27.0], ["2024", "PwC", "Usando poupança para apostar", 52.0], ["2024", "PwC", "Cortando lazer/alimentação", 48.0], ["2025", "PRO-AMJO", "Ideação suicida (2025)", 80.0]]
     return pd.DataFrame(dados, columns=["Ano", "Fonte", "Indicador", "Valor"]), False
 
@@ -172,73 +310,66 @@ df_macro, df_bcb, df_pacientes, sus_encontrado = get_data_estatistica()
 df_problemas, zip_encontrado = get_dados_consumidor_local()
 df_consolidado, csv_encontrado = get_dados_consolidados_csv()
 
-st.sidebar.subheader("Status das Bases de Dados")
 if sus_encontrado: st.sidebar.success("✅ dados_sus.csv carregado!")
-else: st.sidebar.warning("⚠️ SUS (CSV) não encontrado. Usando dados simulados.")
-if zip_encontrado: st.sidebar.success("✅ bases_consumidor.zip carregado!")
-else: st.sidebar.warning("⚠️ ZIP não encontrado. Usando dados simulados.")
-if csv_encontrado: st.sidebar.success("✅ dados_apostas.csv carregado!")
-else: st.sidebar.warning("⚠️ CSV não encontrado. Usando dados simulados.")
+else: st.sidebar.warning("⚠️ dados_sus.csv não encontrado. Usando dados simulados.")
 
-if not df_pacientes.empty:
-    df_pacientes = df_pacientes[(df_pacientes['Genero'].isin(filtro_genero)) & (df_pacientes['Idade'].between(idade_slider[0], idade_slider[1]))]
+if zip_encontrado: st.sidebar.success("✅ bases_consumidor.zip carregado!")
+else: st.sidebar.warning("⚠️ ZIP não encontrado. Usando Mockup.")
+
+if csv_encontrado: st.sidebar.success("✅ dados_apostas_consolidado.csv carregado!")
+else: st.sidebar.warning("⚠️ CSV não encontrado. Usando Mockup.")
+
+df_pacientes = df_pacientes[(df_pacientes['Genero'].isin(filtro_genero)) & (df_pacientes['Idade'].between(idade_slider[0], idade_slider[1]))]
 
 # =====================================================================
 # 4. DASHBOARD E GRÁFICOS
 # =====================================================================
-st.markdown("<h1>📊 Painel Analítico: Ludopatia & BETs</h1><p style='color: #64748b; font-size: 1.1rem;'>Análise técnica sobre o impacto das apostas online na estrutura socioeconômica.</p>", unsafe_allow_html=True)
-st.markdown('''<div class="kpi-container"><div class="kpi-box danger"><div class="kpi-label">Apostadores Endividados</div><div class="kpi-value">86%</div><div class="kpi-label" style="text-transform:none">Fonte: Serasa/Locomotiva</div></div><div class="kpi-box danger"><div class="kpi-label">Ideação Suicida</div><div class="kpi-value">80%</div><div class="kpi-label" style="text-transform:none">Pacientes em Tratamento</div></div><div class="kpi-box"><div class="kpi-label">Volume Anual Estimado</div><div class="kpi-value">R$ 120 Bi</div><div class="kpi-label" style="text-transform:none">Mercado no Brasil</div></div><div class="kpi-box"><div class="kpi-label">Perfil Jovem</div><div class="kpi-value">56%</div><div class="kpi-label" style="text-transform:none">18 a 39 anos</div></div></div>''', unsafe_allow_html=True)
+st.markdown(f"<h1 class='titulo-principal' style='color: {text_main}; font-size: 2.55em;'>Painel Analítico: Ludopatia & BETs</h1><p class='subtitulo-principal' style='color: {text_muted}; font-size: 1.15em;'>Análise técnica sobre o impacto das apostas online na estrutura socioeconômica.</p>", unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["📈 Dashboard Visual", "🗄️ Bases de Dados"])
+st.markdown(f'''<div class="kpi-container"><div class="kpi-box danger"><div class="kpi-label">Apostadores Endividados</div><div class="kpi-value">86%</div><div class="kpi-label" style="text-transform:none">Fonte: Serasa/Locomotiva</div></div><div class="kpi-box danger"><div class="kpi-label">Ideação Suicida</div><div class="kpi-value">80%</div><div class="kpi-label" style="text-transform:none">Pacientes em Tratamento</div></div><div class="kpi-box"><div class="kpi-label">Volume Anual Estimado</div><div class="kpi-value">R$ 120 Bi</div><div class="kpi-label" style="text-transform:none">Mercado no Brasil</div></div><div class="kpi-box"><div class="kpi-label">Perfil Jovem</div><div class="kpi-value">56%</div><div class="kpi-label" style="text-transform:none">18 a 39 anos</div></div></div>''', unsafe_allow_html=True)
+
+tab1, tab2 = st.tabs(["📈 Dashboard Visual", "🗄️ Bases de Dados Puras (Raw Data)"])
 
 with tab1:
-    def render_card(col, title, label, value, fig, desc):
+    def render_dashboard_card(col, title, metric_label, metric_value, fig, desc):
         with col:
             with st.container(border=True):
                 st.subheader(title)
-                st.metric(label, value)
-                fig.tight_layout()
-                # Não colocamos "transparent=True" para que ele obedeça a cor de fundo inteligente que criamos lá em cima
-                st.pyplot(fig, width='stretch') 
+                st.metric(metric_label, metric_value)
+                st.pyplot(fig, transparent=True) 
                 st.markdown(f'<div class="grafico-desc">{desc}</div>', unsafe_allow_html=True)
-                plt.close(fig)
+                plt.close(fig) 
 
     col1, col2 = st.columns(2)
     fig1, ax1 = plt.subplots(figsize=(6, 3))
     sns.barplot(data=df_macro, x='Valor', y='Categoria', ax=ax1, palette="viridis")
-    render_card(col1, "1. Modalidades Praticadas", "Liderança", "71.3% Loterias", fig1, "<strong>📌 Análise:</strong> As loterias tradicionais ainda dominam o mercado de apostas no Brasil, representando 71,3% do engajamento total. As BETs digitais, com 32,1%, cresceram de forma acelerada impulsionadas pela facilidade mobile.")
+    render_dashboard_card(col1, "1. Modalidades Praticadas", "Liderança", "71.3% Loterias", fig1, "<strong>📌 Análise:</strong> As loterias tradicionais ainda dominam o mercado.")
 
     fig2, ax2 = plt.subplots(figsize=(6, 3))
     sns.lineplot(data=df_bcb, x='Ano', y='Inadimplencia', ax=ax2, color='#ef4444', marker='o')
-    render_card(col2, "2. Inadimplência Familiar", "Média Atual", "3.1%", fig2, "<strong>📌 Análise:</strong> A curva de inadimplência familiar acompanha o crescimento das apostas online. Após uma queda entre 2018 e 2021, observa-se uma retomada do endividamento a partir de 2022.")
+    render_dashboard_card(col2, "2. Inadimplência Familiar", "Média Atual", "3.1%", fig2, "<strong>📌 Análise:</strong> A curva de inadimplência acompanha o crescimento das BETs.")
 
     col3, col4 = st.columns(2)
-    if not df_pacientes.empty:
-        fig3, ax3 = plt.subplots(figsize=(6, 3))
-        sns.histplot(data=df_pacientes, x='Idade', kde=True, ax=ax3, color="#a7197f")
-        render_card(col3, "3. Perfil Etário de Risco", "Média de Idade", f"{int(df_pacientes['Idade'].mean())} anos", fig3, "<strong>📌 Análise:</strong> A distribuição etária revela que a ludopatia afeta predominantemente adultos jovens, com concentração entre 20 e 35 anos. A prevenção precoce nesta faixa é fundamental.")
+    fig3, ax3 = plt.subplots(figsize=(6, 3))
+    sns.histplot(data=df_pacientes, x='Idade', kde=True, ax=ax3, color="#a7197f")
+    render_dashboard_card(col3, "3. Perfil Etário de Risco", "Média de Idade", f"{int(df_pacientes['Idade'].mean()) if not df_pacientes.empty else 0} anos", fig3, "<strong>📌 Análise:</strong> Predominância de adultos jovens, com concentração entre 20 e 35 anos.")
 
-        fig4, ax4 = plt.subplots(figsize=(6, 3))
-        sns.boxplot(data=df_pacientes, x='Genero', y='Divida_Acumulada', ax=ax4, palette="muted")
-        render_card(col4, "4. Endividamento por Gênero", "Impacto", "Variável", fig4, "<strong>📌 Análise:</strong> O boxplot evidencia que homens apresentam maior dispersão e valores extremos de dívida acumulada em comparação às mulheres, sugerindo comportamentos mais agressivos.")
+    fig4, ax4 = plt.subplots(figsize=(6, 3))
+    sns.boxplot(data=df_pacientes, x='Genero', y='Divida_Acumulada', ax=ax4, palette="muted")
+    render_dashboard_card(col4, "4. Endividamento por Gênero", "Impacto", "Variável", fig4, "<strong>📌 Análise:</strong> Homens apresentam maior dispersão de dívida.")
 
     col5, col6 = st.columns(2)
-    if not df_pacientes.empty and 'Renda_Mensal' in df_pacientes.columns:
-        fig5, ax5 = plt.subplots(figsize=(6, 3))
-        sns.scatterplot(data=df_pacientes, x='Renda_Mensal', y='Divida_Acumulada', hue='Genero', ax=ax5, palette="deep")
-        
-        # Corrige a cor da legenda do scatterplot no modo escuro
-        legenda = ax5.legend()
-        if modo_escuro:
-            plt.setp(legenda.get_texts(), color=text_main)
-            
-        render_card(col5, "5. Renda vs Dívida", "Correlação", "Direta", fig5, "<strong>📌 Análise:</strong> O gráfico demonstra que o endividamento cresce proporcionalmente à renda, contrariando a percepção de que apenas pessoas de baixa renda são vulneráveis.")
+    fig5, ax5 = plt.subplots(figsize=(6, 3))
+    sns.scatterplot(data=df_pacientes, x='Renda_Mensal', y='Divida_Acumulada', hue='Genero', ax=ax5, palette="deep")
+    render_dashboard_card(col5, "5. Renda vs Dívida", "Correlação", "Direta", fig5, "📌 <strong>ANÁLISE:</strong> Endividamento cresce proporcionalmente à renda.")
 
-    fig6, ax6 = plt.subplots(figsize=(6, 3))
+    fig6, ax6 = plt.subplots(figsize=(6, 3.5))
     sns.barplot(data=df_problemas, x='Quantidade', y='Problema', ax=ax6, palette="flare")
     ax6.set_yticks(ax6.get_yticks())
+    # Aumentamos o limite para 35 caracteres para evitar esmagamento vertical
     ax6.set_yticklabels([textwrap.fill(l.get_text(), 35) for l in ax6.get_yticklabels()], fontsize=8)
-    render_card(col6, "6. Reclamações contra BETs", "Principal", "Saque", fig6, "<strong>📌 Análise:</strong> As reclamações mostram que a dificuldade de saque lidera as ocorrências, expondo práticas abusivas de retenção de recursos nas plataformas.")
+    fig6.tight_layout() # Força o Matplotlib a ajustar as margens para não cortar o texto
+    render_dashboard_card(col6, "6. Reclamações contra BETs", "Principal", "Saque", fig6, "📌 <strong>ANÁLISE:</strong> Dificuldade de saque lidera as ocorrências no Consumidor.gov.")
 
     col7, col8 = st.columns(2)
     with col7:
@@ -254,7 +385,7 @@ with tab1:
             ax7.set_ylim(0, 100)
             
         valor_destaque = f"{int(df_fin['Valor'].max())}%" if not df_fin.empty else "N/A"
-        render_card(col7, "7. Impacto Financeiro", "Destaque", valor_destaque, fig7, "<strong>📌 Análise:</strong> A pesquisa consolidada prova a tese da inadimplência: mais da metade dos apostadores recorre à poupança ou compromete o consumo essencial para financiar o jogo.")
+        render_dashboard_card(col7, "7. Impacto Financeiro", "Destaque", valor_destaque, fig7, "<strong>📌 Análise:</strong> O descontrole reflete no orçamento familiar.")
 
     with col8:
         fig8, ax8 = plt.subplots(figsize=(6, 3))
@@ -262,29 +393,33 @@ with tab1:
         if not df_sui.empty:
             sns.barplot(data=df_sui, x='Ano', y='Valor', ax=ax8, palette=["#f59e0b", "#ef4444"])
             ax8.set_ylim(0, 100)
-        render_card(col8, "8. Ideação Suicida", "Crescimento", "+53 p.p.", fig8, "<strong>📌 Análise:</strong> O cruzamento bibliográfico revela um salto alarmante na saúde pública: de 27% (em 2018) para quase 80% (em 2025) na taxa de ideação suicida entre pacientes em tratamento.")
+        render_dashboard_card(col8, "8. Ideação Suicida", "Crescimento", "+53 p.p.", fig8, "<strong>📌 Análise:</strong> Salto de 27% (2018) para 80% (2025) nos pacientes.")
 
 with tab2:
     @st.cache_data
-    def convert_csv(df): return df.to_csv(index=False).encode('utf-8')
-    st.markdown("### Bases de Dados Brutas / Tratadas")
+    def convert_df_to_csv(df): return df.to_csv(index=False).encode('utf-8')
     
-    st.subheader("1. Microdados SUS")
-    st.dataframe(df_pacientes, width='stretch')
-    st.download_button("📥 Baixar CSV (SUS)", data=convert_csv(df_pacientes), file_name='dados_sus.csv', mime='text/csv')
+    st.markdown("### Bases de Dados Brutas / Tratadas")
+    st.write("Faça o download dos arquivos utilizados na pesquisa:")
+    
+    st.subheader("1. Microdados Simulados (DataSUS - F63.0)")
+    st.dataframe(df_pacientes, use_container_width=True)
+    st.download_button("📥 Baixar Dados SUS (CSV)", data=convert_df_to_csv(df_pacientes), file_name='dados_sus.csv', mime='text/csv')
     
     st.markdown("---")
-    st.subheader("2. Pesquisa da Equipe")
-    st.dataframe(df_consolidado, width='stretch')
-    st.download_button("📥 Baixar CSV (Equipe)", data=convert_csv(df_consolidado), file_name='dados_equipe.csv', mime='text/csv')
+    st.subheader("2. Pesquisa Estruturada da Equipe")
+    st.dataframe(df_consolidado, use_container_width=True)
+    st.download_button("📥 Baixar Pesquisa da Equipe (CSV)", data=convert_df_to_csv(df_consolidado), file_name='dados_apostas_consolidado.csv', mime='text/csv')
     
     st.markdown("---")
     st.subheader("3. Base do Consumidor.gov.br (ZIP)")
+    st.write("Faça o download da base bruta original compactada com os arquivos CSV (200MB).")
+    
     caminho_zip = 'bases_consumidor.zip'
     if os.path.exists(caminho_zip):
         with open(caminho_zip, "rb") as fp:
             st.download_button(label="📥 Baixar ZIP Original (Consumidor.gov)", data=fp, file_name="bases_consumidor.zip", mime="application/zip")
     else:
-        st.info("O arquivo bases_consumidor.zip não está disponível na pasta atual.")
+        st.error(f"Arquivo '{caminho_zip}' não foi encontrado na pasta do sistema para download.")
 
-st.markdown('''<div style="text-align: center; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px; color: #64748b; font-size: 0.85rem;"><strong>Projeto Integrador I - Ciência da Computação | UniCEUB</strong><br><br><a href="https://github.com/CaioB1ima" target="_blank" style="color: #a7197f; text-decoration: none; font-weight: 600; margin: 0 10px;">Caio Lima</a> | <a href="https://github.com/Gadshx" target="_blank" style="color: #a7197f; text-decoration: none; font-weight: 600; margin: 0 10px;">Guilherme Augusto</a> | <a href="https://github.com/Gustavox0207" target="_blank" style="color: #a7197f; text-decoration: none; font-weight: 600; margin: 0 10px;">Gustavo Albuquerque</a> | <a href="https://github.com/Lukithas" target="_blank" style="color: #a7197f; text-decoration: none; font-weight: 600; margin: 0 10px;">Lucas Bretas</a> | <a href="https://github.com/Tweuz" target="_blank" style="color: #a7197f; text-decoration: none; font-weight: 600; margin: 0 10px;">Mateus Onival</a></div>''', unsafe_allow_html=True)
+st.markdown(f'''<div style="text-align: center; margin-top: 56px; border-top: {borda_box} solid {border_color}; padding-top: 30px; padding-bottom: 14px; color: {text_muted}; font-size: 1.05em;"><strong style="font-size: 1.25em; letter-spacing: 0.02em;">Projeto Integrador I · Ciência da Computação · UniCEUB</strong><br><br><a href="https://github.com/CaioB1ima" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Caio Lima</a> | <a href="https://github.com/Gadshx" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Guilherme Augusto</a> | <a href="https://github.com/Gustavox0207" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Gustavo Albuquerque</a> | <a href="https://github.com/Lukithas" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Lucas Bretas</a> | <a href="https://github.com/Tweuz" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Mateus Onival</a></div>''', unsafe_allow_html=True)
