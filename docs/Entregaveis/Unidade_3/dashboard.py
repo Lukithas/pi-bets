@@ -298,10 +298,14 @@ with tab2:
     st.markdown("---")
     st.subheader("3. Base do Consumidor.gov.br (ZIP)")
     caminho_zip = 'bases_consumidor.zip'
+    
+    # Adicionado botão interativo com redirecionamento para o Google Drive
     if os.path.exists(caminho_zip):
         with open(caminho_zip, "rb") as fp:
-            st.download_button(label="📥 Baixar ZIP Original (Consumidor.gov)", data=fp, file_name="bases_consumidor.zip", mime="application/zip")
+            st.download_button(label="📥 Baixar ZIP Original (Local)", data=fp, file_name="bases_consumidor.zip", mime="application/zip")
+        st.link_button("🌐 Acessar ZIP na Nuvem (Google Drive)", "https://drive.google.com/file/d/1CdNFyyhl884G3lAyxmNQ7gi9Ogf_Spsm/view?usp=sharing")
     else:
-        st.info("O arquivo ZIP não está disponível no ambiente atual.")
+        st.info("O arquivo ZIP não está armazenado localmente no servidor. Você pode baixá-lo diretamente da nossa nuvem:")
+        st.link_button("🌐 Acessar ZIP na Nuvem (Google Drive)", "https://drive.google.com/file/d/1CdNFyyhl884G3lAyxmNQ7gi9Ogf_Spsm/view?usp=sharing")
 
 st.markdown(f'''<div style="text-align: center; margin-top: 56px; border-top: {borda_box} solid {border_color}; padding-top: 30px; padding-bottom: 14px; color: {text_muted}; font-size: 1.05em;"><strong style="font-size: 1.25em; letter-spacing: 0.02em;">Projeto Integrador I · Ciência da Computação · UniCEUB</strong><br><br><a href="https://github.com/CaioB1ima" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Caio Lima</a> | <a href="https://github.com/Gadshx" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Guilherme Augusto</a> | <a href="https://github.com/Gustavox0207" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Gustavo Albuquerque</a> | <a href="https://github.com/Lukithas" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Lucas Bretas</a> | <a href="https://github.com/Tweuz" target="_blank" style="color: {accent}; text-decoration: none; font-weight: 600; margin: 0 12px; font-size: 1.05em;">Mateus Onival</a></div>''', unsafe_allow_html=True)
