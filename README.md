@@ -204,6 +204,6 @@ Este projeto é desenvolvido como parte do currículo do curso de Ciência da Co
 ---
 
 <p align="center">
-  Desenvolvido com ❤️ para o Projeto Integrador I — UniCEUB<br/>
+  Desenvolvido com para o Projeto Integrador I — UniCEUB<br/>
   <strong>5º Semestre - 2026</strong>
 </p>
