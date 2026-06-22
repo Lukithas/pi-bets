@@ -18,7 +18,7 @@ Investigação acadêmica focada no cruzamento de dados entre **apostas online**
 | :--- | :--- |
 | **Apresentação do Projeto** | [ihcbets.netlify.app](https://ihcbets.netlify.app/) |
 | **Backlog do Projeto** | [backlogpibets.netlify.app](https://backlogpibets.netlify.app/) |
-| **Dashboard Interativo** | _em atualização — novo link em breve_ |
+| **Dashboard Interativo** | [dashboard](https://pi-bets-site-dashboard.streamlit.app/) |
 
 ### Documentação e Relatórios
 
