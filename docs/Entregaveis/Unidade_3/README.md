@@ -80,5 +80,5 @@ O navegador abrirá automaticamente em `http://localhost:8501`.
 ---
 
 <p align="center">
-  Desenvolvido com ❤️ para o Projeto Integrador I — UniCEUB
+  Desenvolvido com  para o Projeto Integrador I — UniCEUB
 </p>
