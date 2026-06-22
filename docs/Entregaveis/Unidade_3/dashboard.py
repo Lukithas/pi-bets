@@ -195,7 +195,7 @@ df_consolidado, csv_encontrado = get_dados_consolidados_csv()
 if sus_encontrado: st.sidebar.success("✅ SUS (CSV) carregado!")
 else: st.sidebar.warning("⚠️ SUS não encontrado (Usando Mockup)")
 if zip_encontrado: st.sidebar.success("✅ Consumidor.gov (ZIP) carregado!")
-else: st.sidebar.warning("⚠️ ZIP não encontrado (Usando Mockup)")
+else: st.sidebar.info("☁️ Consumidor.gov (ZIP) via Nuvem")
 if csv_encontrado: st.sidebar.success("✅ Pesquisa Equipe carregada!")
 else: st.sidebar.warning("⚠️ CSV não encontrado (Usando Mockup)")
 
