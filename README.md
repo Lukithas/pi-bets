@@ -2,7 +2,7 @@
 
 > Projeto Integrador I — Ciência da Computação | **UniCEUB** (5º Semestre)
 
-## 🎯 Sobre o Projeto
+##  Sobre o Projeto
 
 Investigação acadêmica focada no cruzamento de dados entre **apostas online** e **endividamento doméstico**. Este estudo busca validar a hipótese do vício mediado pela **tecnologia (IHC)** e pela **facilidade do Pix**, analisando a perda da estabilidade financeira e da renda básica familiar.
 
@@ -32,7 +32,7 @@ Investigação acadêmica focada no cruzamento de dados entre **apostas online**
 
 ---
 
-## 📋 Propósito e Escopo
+## Propósito e Escopo
 
 O foco deste semestre é a **"resolução de problemas complexos"** por meio de investigação profunda do cenário atual. Existe uma lacuna no entendimento sobre o impacto real da facilidade de acesso às apostas.
 
@@ -40,16 +40,16 @@ O foco deste semestre é a **"resolução de problemas complexos"** por meio de 
 
 ---
 
-## 🎯 Funcionalidades do Dashboard
+##  Funcionalidades do Dashboard
 
-- **📈 Análise Macro** — Evolução da inadimplência cruzada com dados do Banco Central (SGS)
-- **🏥 Perfil Epidemiológico** — Microdados de pacientes (DataSUS, CID-10 F63.0), com fallback simulado quando o dado real não está disponível
-- **🔍 Mineração de Dados (Batch)** — Processamento em lote de arquivos `.csv` do portal Consumidor.gov.br
-- **🎨 Design IHC** — Interface adaptativa, modo escuro, alto contraste e ajuste de fonte
+- **Análise Macro** — Evolução da inadimplência cruzada com dados do Banco Central (SGS)
+- **Perfil Epidemiológico** — Microdados de pacientes (DataSUS, CID-10 F63.0), com fallback simulado quando o dado real não está disponível
+- **Mineração de Dados (Batch)** — Processamento em lote de arquivos `.csv` do portal Consumidor.gov.br
+- **Design IHC** — Interface adaptativa, modo escuro, alto contraste e ajuste de fonte
 
 ---
 
-## 🔬 Abordagem Metodológica
+##  Abordagem Metodológica
 
 Para identificar as necessidades reais dos usuários e o escopo do problema, aplicamos conceitos de **Lean Inception** e **métodos ágeis**:
 
@@ -79,7 +79,7 @@ O projeto atende aos requisitos de **Atividades Curriculares de Extensão (ACE)*
 
 ---
 
-## 📊 Coleta e Transformação de Dados
+## Coleta e Transformação de Dados
 
 ### Fontes de Dados
 
@@ -91,16 +91,16 @@ O projeto atende aos requisitos de **Atividades Curriculares de Extensão (ACE)*
 
 ---
 
-## ⚙️ Pré-requisitos
+##  Pré-requisitos
 
 - **Python 3.11** ou **3.12**
 - **Git LFS** (para os arquivos grandes do repositório)
 
-> ⚠️ **Usuários de Windows:** durante a instalação do Python, marque a opção **"Add Python to PATH"**.
+>  **Usuários de Windows:** durante a instalação do Python, marque a opção **"Add Python to PATH"**.
 
 ---
 
-## 🚀 Como Instalar e Rodar Localmente
+##  Como Instalar e Rodar Localmente
 
 ### 1. Clonar o repositório
 
@@ -183,7 +183,7 @@ pi-bets/
 
 ---
 
-## 👨‍💻 Equipe de Desenvolvimento
+##  Equipe de Desenvolvimento
 
 | Nome | GitHub |
 |:---|:---|
@@ -195,14 +195,14 @@ pi-bets/
 
 ---
 
-## 📚 Referencial Teórico
+##  Referencial Teórico
 
 ### Banco Central do Brasil
 *Análise do perfil dos usuários do Pix em plataformas de apostas* — este estudo evidencia o alto volume de recursos transferidos por pessoas físicas (incluindo beneficiários de programas sociais) para empresas de apostas esportivas.
 
 ---
 
-## 📝 Licença
+##  Licença
 
 Este projeto é desenvolvido como parte do currículo do curso de Ciência da Computação - UniCEUB.
 
