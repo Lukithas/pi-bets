@@ -147,34 +147,38 @@ O navegador abrirá automaticamente em `http://localhost:8501`.
 
 ```
 pi-bets/
-├── README.md
-├── .gitattributes                        # Configuração Git LFS
-├── data/
-│   ├── Fontes.md
+├── data/                               # Bases de dados e referências
 │   ├── base_consumidorgov_2024_01.csv
 │   ├── base_consumidorgov_2025_07.csv
 │   ├── base_consumidorgov_2026_02.csv
-│   └── dados_apostas_consolidados.csv
-├── sites/
+│   ├── dados_apostas_consolidados.csv
+│   └── Fontes.md
+├── docs/                               # Documentação e Entregáveis
+│   ├── Entregaveis/
+│   │   ├── Relatórios Técnicos/        # Relatórios de análise técnica
+│   │   ├── Unidade 1/                  # Documentação inicial
+│   │   ├── Unidade 2/                  # Modelagem e KPIs
+│   │   ├── Unidade 3/                  # Dashboard Interativo (Streamlit)
+│   │   │   ├── dados_consumidor_csvs/  # Bases específicas do dashboard
+│   │   │   ├── config.toml             # Configurações do Streamlit
+│   │   │   ├── dashboard.py            # Código principal do painel
+│   │   │   └── requirements.txt        # Dependências do Python
+│   │   ├── Unidade 4/                  # Documento Mestre
+│   │   │   └── pi_bets_documento_mestre.pdf
+│   │   ├── Unidade 5/                  # Entrega Final e Conformidade
+│   │   │   ├── Documentação_Final.pdf
+│   │   │   ├── Relatório de Conformidade (LGPD).pdf
+│   │   │   └── ACE - Avaliação Comunidade.pdf
+│   │   ├── TERMO DE ABERTURA DO PROJETO.docx
+│   │   └── VISÃO GERAL DO PROJETO.docx
+│   └── .gitkeep
+├── sites/                              # Páginas de apresentação (Netlify)
 │   ├── Documentação.html
 │   └── Fontes.html
-└── docs/
-    └── Entregaveis/
-        ├── DOCUMENTACAO GERAL DEFINITIVA/
-        ├── Relatórios Técnicos/
-        ├── Unidade 1/
-        │   └── Mapa da empatia/
-        ├── Unidade 2/
-        │   └── Prototipos/
-        └── Unidade_3/                    # Dashboard e dados da entrega final
-            ├── README.md
-            ├── dashboard.py
-            ├── requirements.txt
-            ├── .streamlit/
-            │   └── config.toml
-            ├── bases_consumidor.zip
-            ├── dados_apostas_consolidado.csv
-            └── dados_sus.csv
+├── .gitattributes
+├── README.md                           # Documentação principal
+└── Sprintfinal.md                      # Backlog e controle de sprints
+
 ```
 
 ---
