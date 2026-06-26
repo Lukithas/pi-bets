@@ -1,4 +1,4 @@
-# 📊 PI-BETS: Análise do Impacto Econômico das Apostas Online no Endividamento Familiar
+#  PI-BETS: Análise do Impacto Econômico das Apostas Online no Endividamento Familiar
 
 > Projeto Integrador I — Ciência da Computação | **UniCEUB** (5º Semestre)
 
